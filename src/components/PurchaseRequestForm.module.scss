@@ -1,0 +1,106 @@
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 500px;
+  box-sizing: border-box;
+  margin: 24px 0;
+  padding: 24px;
+  border: 1px solid #e8e0d6;
+  border-radius: 10px;
+  background-color: #ffffff;
+  color: #39332d;
+}
+
+.form h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 500;
+  color: #39332d;
+}
+
+.form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #55493d;
+}
+
+.form input,
+.form select,
+.form textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e5dbcf;
+  border-radius: 7px;
+  background-color: #fffefa;
+  color: #39332d;
+  font: inherit;
+  font-weight: 400;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.form input:focus,
+.form select:focus,
+.form textarea:focus {
+  outline: 2px solid #d5c2ab;
+  outline-offset: 1px;
+}
+
+.form textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.actions button {
+  padding: 10px 18px;
+  border: 1px solid #e5dbcf;
+  border-radius: 7px;
+  background-color: #fffefa;
+  color: #796957;
+  cursor: pointer;
+  font-size: 14px;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.actions button:hover {
+  background-color: #f5f0e8;
+}
+
+.actions button:last-child {
+  border-color: #8b735d;
+  background-color: #8b735d;
+  color: #ffffff;
+}
+
+.actions button:last-child:hover {
+  background-color: #76604d;
+}
+
+.actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error {
+  color: #a65345;
+  font-size: 12px;
+  font-weight: 400;
+}

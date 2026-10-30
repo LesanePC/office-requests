@@ -1,0 +1,289 @@
+.page {
+  min-height: 100vh;
+  width: 100%;
+  padding: 36px 48px;
+  background-color: #faf8f4;
+  color: #39332d;
+  font-family: Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+.title {
+  margin: 0 0 28px;
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.7px;
+  color: #39332d;
+}
+
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #e8e0d6;
+  border-radius: 10px;
+  background-color: #ffffff;
+}
+
+.table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: collapse;
+  background-color: #ffffff;
+
+  th,
+  td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #f0ebe5;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    background-color: #f5f0e8;
+    color: #796957;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+
+  td {
+    color: #39332d;
+    font-size: 14px;
+  }
+
+  /* Наименование */
+  th:nth-child(1) {
+    min-width: 180px;
+  }
+
+  /* Количество и единица */
+  th:nth-child(3),
+  th:nth-child(4) {
+    white-space: nowrap;
+  }
+
+  /* Комментарий */
+  th:nth-child(6) {
+    min-width: 220px;
+  }
+
+  /* Ссылка */
+  th:nth-child(7) {
+    min-width: 100px;
+  }
+
+  /* Действия */
+  th:nth-child(8) {
+    min-width: 190px;
+  }
+
+  th button {
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-weight: inherit;
+    letter-spacing: inherit;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  th button:hover {
+    color: #39332d;
+  }
+
+  th button:focus-visible {
+    outline: 2px solid #d5c2ab;
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  tbody tr:hover {
+    background-color: #fdfbf8;
+  }
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 28px;
+
+  button {
+    min-height: 40px;
+    padding: 10px 18px;
+    border: 1px solid #8b735d;
+    border-radius: 7px;
+    background-color: #8b735d;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition:
+      background-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  button:hover {
+    background-color: #76604d;
+    box-shadow: 0 2px 6px rgb(139 115 93 / 15%);
+  }
+}
+
+.search,
+.filter {
+  box-sizing: border-box;
+  min-height: 40px;
+  padding: 9px 12px;
+  border: 1px solid #e5dbcf;
+  border-radius: 7px;
+  background-color: #fffefa;
+  color: #39332d;
+  font: inherit;
+  font-size: 14px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.search {
+  width: 320px;
+  max-width: 100%;
+}
+
+.filter {
+  min-width: 150px;
+  cursor: pointer;
+}
+
+.search:focus,
+.filter:focus {
+  outline: 2px solid #d5c2ab;
+  outline-offset: 2px;
+}
+
+.actionButton,
+.deleteButton {
+  white-space: nowrap;
+  padding: 7px 10px;
+  border: 1px solid #e5dbcf;
+  border-radius: 6px;
+  background-color: #fffefa;
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.actionButton {
+  color: #796957;
+}
+
+.actionButton:hover {
+  background-color: #f5f0e8;
+  border-color: #cbb9a4;
+}
+
+.deleteButton {
+  color: #a05f52;
+}
+
+.deleteButton:hover {
+  background-color: #fbf1ed;
+  border-color: #dfc0b7;
+}
+
+.count {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 16px;
+  color: #796957;
+  font-size: 13px;
+
+  span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 28px;
+    padding: 0 8px;
+    border: 1px solid #e8e0d6;
+    border-radius: 8px;
+    background-color: #f5f0e8;
+    color: #6f5a49;
+    font-size: 13px;
+    font-weight: 600;
+  }
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: rgb(57 51 45 / 40%);
+  animation: fadeIn 0.2s ease;
+}
+
+.modalContent {
+  width: 100%;
+  max-width: 540px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  animation: modalAppear 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalAppear {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 600px) {
+  .page {
+    padding: 20px 14px;
+  }
+
+  .title {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .toolbar {
+    align-items: stretch;
+  }
+
+  .toolbar button,
+  .search,
+  .filter {
+    width: 100%;
+  }
+}
