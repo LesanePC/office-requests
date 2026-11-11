@@ -3,11 +3,10 @@ import type {
   PurchaseRequest,
   UpdatePurchaseRequestDto,
 } from "../types/purchase-request";
-import type {
-  PurchaseRequestService
-} from "./purchase-request-service";
+import type { PurchaseRequestService } from "./purchase-request-service";
 
-const requests: PurchaseRequest[] = [{
+const requests: PurchaseRequest[] = [
+  {
     id: "1",
     name: "Монитор",
     quantity: 2,
@@ -30,16 +29,48 @@ const requests: PurchaseRequest[] = [{
     createdBy: "Евгений",
     createdAt: "2026-10-27T10:00:00.000Z",
     updatedAt: "2026-10-29T10:00:00.000Z",
-  }
+  },
 ];
+const STORAGE_KEY = "office-purchase-requests";
+function saveRequests() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(requests));
+}
+
+let isInitialized = false;
+
+function loadRequests(): PurchaseRequest[] {
+  if (isInitialized) {
+    return [...requests];
+  }
+
+  const savedRequests = localStorage.getItem(STORAGE_KEY);
+
+  if (savedRequests) {
+    try {
+      const parsedRequests: unknown = JSON.parse(savedRequests);
+
+      if (Array.isArray(parsedRequests)) {
+        requests.splice(0, requests.length, ...parsedRequests);
+      }
+    } catch (error) {
+      console.error("Не удалось загрузить заявки:", error);
+      saveRequests();
+    }
+  } else {
+    saveRequests();
+  }
+
+  isInitialized = true;
+
+  return [...requests];
+}
 
 const mockPurchaseRequestService: PurchaseRequestService = {
   async getAll() {
-
-    return [...requests];
+    return loadRequests();
   },
   async create(data: CreatePurchaseRequestDto) {
-
+    loadRequests();
     const newRequest: PurchaseRequest = {
       ...data,
       id: crypto.randomUUID(),
@@ -49,10 +80,12 @@ const mockPurchaseRequestService: PurchaseRequestService = {
     };
 
     requests.push(newRequest);
+    saveRequests();
     return newRequest;
   },
 
   async update(id: string, data: UpdatePurchaseRequestDto) {
+    loadRequests();
     const request = requests.find((item) => item.id === id);
 
     if (!request) {
@@ -63,10 +96,13 @@ const mockPurchaseRequestService: PurchaseRequestService = {
       updatedAt: new Date().toISOString(),
     });
 
+    saveRequests();
+
     return request;
   },
 
   async remove(id: string) {
+    loadRequests();
     const index = requests.findIndex((item) => item.id === id);
 
     if (index === -1) {
@@ -74,10 +110,8 @@ const mockPurchaseRequestService: PurchaseRequestService = {
     }
 
     requests.splice(index, 1);
+    saveRequests();
   },
-
 };
 
-export {
-  mockPurchaseRequestService
-};
+export { mockPurchaseRequestService };
