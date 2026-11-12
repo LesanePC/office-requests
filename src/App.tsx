@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { mockPurchaseRequestService } from "./services/mock-purchase-request-service";
+import { purchaseRequestService } from "./services/purchase-request-service-instance";
 import type {
   CreatePurchaseRequestDto,
   PurchaseRequest,
@@ -52,7 +52,7 @@ function App() {
     setLoadError("");
 
     try {
-      const data = await mockPurchaseRequestService.getAll();
+      const data = await purchaseRequestService.getAll();
       setRequests(data);
     } catch (error) {
       console.error("Ошибка загрузки заявок:", error);
@@ -119,11 +119,11 @@ function App() {
   async function handleCreateRequest(data: CreatePurchaseRequestDto) {
     try {
       if (editingId === null) {
-        const newRequest = await mockPurchaseRequestService.create(data);
+        const newRequest = await purchaseRequestService.create(data);
 
         setRequests((currentRequests) => [...currentRequests, newRequest]);
       } else {
-        const updatedRequest = await mockPurchaseRequestService.update(
+        const updatedRequest = await purchaseRequestService.update(
           editingId,
           data,
         );
@@ -162,7 +162,7 @@ function App() {
     }
 
     try {
-      await mockPurchaseRequestService.remove(id);
+      await purchaseRequestService.remove(id);
 
       setRequests((currentRequests) =>
         currentRequests.filter((request) => request.id !== id),
