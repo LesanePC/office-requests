@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { purchaseRequestService } from "./services/purchase-request-service-instance";
+import { useEffect, useRef, useState } from "react";
+import { usePurchaseRequests } from "./hooks/usePurchaseRequests";
 import type {
   CreatePurchaseRequestDto,
   PurchaseRequest,
@@ -8,20 +8,26 @@ import PurchaseRequestForm from "./components/PurchaseRequestForm";
 import styles from "./App.module.scss";
 
 function App() {
-  const [requests, setRequests] = useState<PurchaseRequest[]>([]);
   const [search, setSearch] = useState<string>("");
   const [departmentFilter, setDepartmentFilter] = useState("all");
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<"name" | "createdAt">("name");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [loadError, setLoadError] = useState<string>("");
-
   const modalRef = useRef<HTMLDivElement>(null);
   const addButtonRef = useRef<HTMLButtonElement>(null);
   const wasFormOpenRef = useRef(false);
   const hasActiveFilters = search.trim() !== "" || departmentFilter !== "all";
+
+  const {
+    requests,
+    isLoading,
+    loadError,
+    loadRequests,
+    createRequest,
+    updateRequest,
+    deleteRequest,
+  } = usePurchaseRequests();
 
   const filteredRequests = requests.filter((request) => {
     const matchesSearch = request.name
@@ -46,25 +52,6 @@ function App() {
 
     return sortOrder === "asc" ? result : -result;
   });
-
-  const loadRequests = useCallback(async () => {
-    setIsLoading(true);
-    setLoadError("");
-
-    try {
-      const data = await purchaseRequestService.getAll();
-      setRequests(data);
-    } catch (error) {
-      console.error("Ошибка загрузки заявок:", error);
-      setLoadError("Не удалось загрузить заявки. Попробуй ещё раз.");
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadRequests();
-  }, [loadRequests]);
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
@@ -119,20 +106,9 @@ function App() {
   async function handleCreateRequest(data: CreatePurchaseRequestDto) {
     try {
       if (editingId === null) {
-        const newRequest = await purchaseRequestService.create(data);
-
-        setRequests((currentRequests) => [...currentRequests, newRequest]);
+        await createRequest(data);
       } else {
-        const updatedRequest = await purchaseRequestService.update(
-          editingId,
-          data,
-        );
-
-        setRequests((currentRequests) =>
-          currentRequests.map((request) =>
-            request.id === editingId ? updatedRequest : request,
-          ),
-        );
+        await updateRequest(editingId, data);
       }
 
       resetForm();
@@ -162,11 +138,7 @@ function App() {
     }
 
     try {
-      await purchaseRequestService.remove(id);
-
-      setRequests((currentRequests) =>
-        currentRequests.filter((request) => request.id !== id),
-      );
+      await deleteRequest(id);
     } catch (error) {
       console.error("Ошибка удаления заявки:", error);
       alert("Не удалось удалить заявку. Попробуй ещё раз.");
