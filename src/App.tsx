@@ -6,18 +6,14 @@ import type {
 } from "./types/purchase-request";
 import PurchaseRequestForm from "./components/PurchaseRequestForm";
 import styles from "./App.module.scss";
+import { useFilteredPurchaseRequests } from "./hooks/useFilteredPurchaseRequests";
 
 function App() {
-  const [search, setSearch] = useState<string>("");
-  const [departmentFilter, setDepartmentFilter] = useState("all");
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [sortBy, setSortBy] = useState<"name" | "createdAt">("name");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const modalRef = useRef<HTMLDivElement>(null);
   const addButtonRef = useRef<HTMLButtonElement>(null);
   const wasFormOpenRef = useRef(false);
-  const hasActiveFilters = search.trim() !== "" || departmentFilter !== "all";
 
   const {
     requests,
@@ -29,29 +25,18 @@ function App() {
     deleteRequest,
   } = usePurchaseRequests();
 
-  const filteredRequests = requests.filter((request) => {
-    const matchesSearch = request.name
-      .toLowerCase()
-      .includes(search.toLowerCase());
-
-    const matchesDepartment =
-      departmentFilter === "all" || request.department === departmentFilter;
-
-    return matchesSearch && matchesDepartment;
-  });
-
-  const sortedRequests = [...filteredRequests].sort((a, b) => {
-    let result = 0;
-
-    if (sortBy === "name") {
-      result = a.name.localeCompare(b.name, "ru");
-    } else {
-      result =
-        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-    }
-
-    return sortOrder === "asc" ? result : -result;
-  });
+  const {
+    search,
+    setSearch,
+    departmentFilter,
+    setDepartmentFilter,
+    sortBy,
+    sortOrder,
+    hasActiveFilters,
+    filteredRequests,
+    sortedRequests,
+    handleSort,
+  } = useFilteredPurchaseRequests(requests);
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
@@ -142,14 +127,6 @@ function App() {
     } catch (error) {
       console.error("Ошибка удаления заявки:", error);
       alert("Не удалось удалить заявку. Попробуй ещё раз.");
-    }
-  }
-  function handleSort(field: "name" | "createdAt") {
-    if (sortBy === field) {
-      setSortOrder((currentOrder) => (currentOrder === "asc" ? "desc" : "asc"));
-    } else {
-      setSortBy(field);
-      setSortOrder("asc");
     }
   }
 
