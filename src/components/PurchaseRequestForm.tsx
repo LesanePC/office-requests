@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import type { FormEvent } from "react";
 import type {
   CreatePurchaseRequestDto,
   PurchaseRequest,
@@ -38,7 +39,9 @@ function PurchaseRequestForm(props: PurchaseRequestFormProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
 
-  async function handleSave() {
+  async function handleSave(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
     if (isSaving) {
       return;
     }
@@ -100,7 +103,7 @@ function PurchaseRequestForm(props: PurchaseRequestFormProps) {
     }
   }
   return (
-    <div className={styles.form}>
+    <form className={styles.form} onSubmit={handleSave} noValidate>
       <h2>{props.initialData ? "Редактирование заявки" : "Новая заявка"}</h2>
       {saveError && <span className={styles.error}>{saveError}</span>}
       <label htmlFor="request-name">
@@ -175,11 +178,11 @@ function PurchaseRequestForm(props: PurchaseRequestFormProps) {
           Отменить
         </button>
 
-        <button type="button" onClick={handleSave} disabled={isSaving}>
+        <button type="submit" disabled={isSaving}>
           {isSaving ? "Сохранение..." : "Сохранить"}
         </button>
       </div>
-    </div>
+    </form>
   );
 }
 
