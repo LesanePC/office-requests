@@ -105,7 +105,11 @@ function PurchaseRequestForm(props: PurchaseRequestFormProps) {
   return (
     <form className={styles.form} onSubmit={handleSave} noValidate>
       <h2>{props.initialData ? "Редактирование заявки" : "Новая заявка"}</h2>
-      {saveError && <span className={styles.error}>{saveError}</span>}
+      {saveError && (
+        <span className={styles.error} role="alert">
+          {saveError}
+        </span>
+      )}
       <label htmlFor="request-name">
         Наименование
         <input
@@ -113,12 +117,18 @@ function PurchaseRequestForm(props: PurchaseRequestFormProps) {
           id="request-name"
           type="text"
           value={name}
+          aria-invalid={Boolean(nameError)}
+          aria-describedby={nameError ? "request-name-error" : undefined}
           onChange={(event) => {
             setName(event.target.value);
             setNameError("");
           }}
         />
-        {nameError && <span className={styles.error}>{nameError}</span>}
+        {nameError && (
+          <span id="request-name-error" className={styles.error}>
+            {nameError}
+          </span>
+        )}
       </label>
       <label htmlFor="request-quantity">
         Количество
@@ -127,6 +137,10 @@ function PurchaseRequestForm(props: PurchaseRequestFormProps) {
           type="number"
           min="1"
           value={Number.isNaN(quantity) ? "" : quantity}
+          aria-invalid={Boolean(quantityError)}
+          aria-describedby={
+            quantityError ? "request-quantity-error" : undefined
+          }
           onChange={(event) => {
             const value = event.target.value;
 
@@ -134,7 +148,11 @@ function PurchaseRequestForm(props: PurchaseRequestFormProps) {
             setQuantityError("");
           }}
         />
-        {quantityError && <span className={styles.error}>{quantityError}</span>}
+        {quantityError && (
+          <span id="request-quantity-error" className={styles.error}>
+            {quantityError}
+          </span>
+        )}
       </label>
       <label htmlFor="request-department">
         Отдел
@@ -158,11 +176,16 @@ function PurchaseRequestForm(props: PurchaseRequestFormProps) {
           placeholder="Для чего нужна покупка?"
         />
       </label>
-      <label>
+      <label htmlFor="request-product-url">
         Ссылка на товар
         <input
+          id="request-product-url"
           type="url"
           value={productUrl}
+          aria-invalid={Boolean(productUrlError)}
+          aria-describedby={
+            productUrlError ? "request-product-url-error" : undefined
+          }
           onChange={(event) => {
             setProductUrl(event.target.value);
             setProductUrlError("");
@@ -170,7 +193,9 @@ function PurchaseRequestForm(props: PurchaseRequestFormProps) {
           placeholder="https://..."
         />
         {productUrlError && (
-          <span className={styles.error}>{productUrlError}</span>
+          <span id="request-product-url-error" className={styles.error}>
+            {productUrlError}
+          </span>
         )}
       </label>
       <div className={styles.actions}>
