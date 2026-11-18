@@ -9,6 +9,7 @@ import styles from "./App.module.scss";
 import { useFilteredPurchaseRequests } from "./hooks/useFilteredPurchaseRequests";
 import PurchaseRequestTable from "./components/PurchaseRequestTable/PurchaseRequestTable";
 import Toast from "./components/Toast/Toast";
+import { exportPurchaseRequests } from "./utils/exportPurchaseRequests";
 
 function App() {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -165,6 +166,24 @@ function App() {
       });
     }
   }
+  function handleExportRequests() {
+    try {
+      exportPurchaseRequests(sortedRequests);
+
+      setToast({
+        message: "Заявки успешно экспортированы",
+        type: "success",
+      });
+    } catch (error) {
+      console.error("Ошибка экспорта заявок:", error);
+
+      setToast({
+        message: "Не удалось экспортировать заявки",
+        type: "error",
+      });
+    }
+  }
+
   return (
     <>
       {toast && (
@@ -188,7 +207,14 @@ function App() {
           >
             Добавить заявку
           </button>
-
+          <button
+            type="button"
+            className={styles.actionButton}
+            onClick={handleExportRequests}
+            disabled={isLoading || sortedRequests.length === 0}
+          >
+            Экспорт CSV
+          </button>
           <input
             className={styles.search}
             type="text"
