@@ -1,6 +1,6 @@
 import type { PurchaseRequest } from "../types/purchase-request";
 
-export function exportPurchaseRequests(requests: PurchaseRequest[]): void {
+export function buildPurchaseRequestsCsv(requests: PurchaseRequest[]): string {
   const headers = [
     "ID",
     "Наименование",
@@ -13,9 +13,11 @@ export function exportPurchaseRequests(requests: PurchaseRequest[]): void {
     "Дата создания",
     "Дата обновления",
   ];
+
   const formatDate = (date: string): string => {
     return new Date(date).toLocaleString("ru-RU");
   };
+
   const rows = requests.map((request) => [
     request.id,
     request.name,
@@ -28,6 +30,7 @@ export function exportPurchaseRequests(requests: PurchaseRequest[]): void {
     formatDate(request.createdAt),
     formatDate(request.updatedAt),
   ]);
+
   const escapeCsvValue = (value: string | number): string => {
     const stringValue = String(value);
 
@@ -37,17 +40,28 @@ export function exportPurchaseRequests(requests: PurchaseRequest[]): void {
 
     return stringValue;
   };
+
   const csvContent = [
     headers.map(escapeCsvValue).join(";"),
     ...rows.map((row) => row.map(escapeCsvValue).join(";")),
   ].join("\r\n");
-  const blob = new Blob(["\uFEFF" + csvContent], {
+
+  return "\uFEFF" + csvContent;
+}
+
+export function exportPurchaseRequests(requests: PurchaseRequest[]): void {
+  const csvContent = buildPurchaseRequestsCsv(requests);
+
+  const blob = new Blob([csvContent], {
     type: "text/csv;charset=utf-8;",
   });
+
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
+
   link.href = url;
   link.download = `purchase-requests-${new Date().toISOString().slice(0, 10)}.csv`;
+
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
